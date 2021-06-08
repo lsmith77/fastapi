@@ -1,0 +1,22 @@
+name: 'app'
+
+type: 'python:3.8'
+
+dependencies:
+  python3:
+    pipenv: '2018.10.13'
+
+web:
+  upstream:
+    socket_family: unix
+  commands:
+    start: 'gunicorn app.main:app -b unix:$SOCKET -w 4 -k uvicorn.workers.UvicornWorker'
+  locations:
+    '/':
+      passthru: true
+
+disk: 512
+
+hooks:
+  build: |
+    pipenv install --system --deploy
